@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c8f01325-3aa2-4435-a55f-cf411820fb90": {
+      "ProjectGuid": "c8f01325-3aa2-4435-a55f-cf411820fb90",
+      "DisplayName": "StockAnalyzer.Windows",
+      "ColorIndex": 0
+    },
+    "06ec389b-57c9-4a20-b3b5-b88be518d3bc": {
+      "ProjectGuid": "06ec389b-57c9-4a20-b3b5-b88be518d3bc",
+      "DisplayName": "StockAnalyzer.Web",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "4571844d-ad38-44da-b934-980858c5eb00": {
+      "ProjectGuid": "4571844d-ad38-44da-b934-980858c5eb00",
+      "DisplayName": "StockAnalyzer.Core",
+      "ColorIndex": 2
+    }
+  },
+  "NextColorIndex": 3
+}

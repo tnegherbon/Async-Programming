@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\02",
+    "\\02\\Start_Here",
+    "\\02\\Start_Here\\StockAnalyzer.Web",
+    "\\02\\Start_Here\\StockAnalyzer.Web\\Views",
+    "\\02\\Start_Here\\StockAnalyzer.Web\\Views\\Home"
   ],
-  "SelectedNode": "\\C:\\Users\\thiag\\Source\\Repos\\tnegherbon\\Async-Programming",
+  "SelectedNode": "\\02\\Start_Here\\StockAnalyzer.Web\\Views\\Home\\Stock.cshtml",
   "PreviewInSolutionExplorer": false
 }

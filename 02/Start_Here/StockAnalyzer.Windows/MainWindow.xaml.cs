@@ -1,56 +1,77 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using StockAnalyzer.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
-using Newtonsoft.Json;
-using StockAnalyzer.Core.Domain;
 
 namespace StockAnalyzer.Windows
 {
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+	public partial class MainWindow : Window
+	{
+		public MainWindow()
+		{
+			InitializeComponent();
+		}
 
-        private void Search_Click(object sender, RoutedEventArgs e)
-        {
-            #region Before loading stock data
-            var watch = new Stopwatch();
-            watch.Start();
-            StockProgress.Visibility = Visibility.Visible;
-            StockProgress.IsIndeterminate = true;
-            #endregion
+		private async void Search_Click(object sender, RoutedEventArgs e)
+		{
+			#region Before loading stock data
+			var watch = new Stopwatch();
+			watch.Start();
+			StockProgress.Visibility = Visibility.Visible;
+			StockProgress.IsIndeterminate = true;
+			#endregion
 
-            var client = new WebClient();
+			try
+			{
+				await GetStocks();
+			}
+			catch (Exception ex)
+			{
+				Notes.Text += ex.Message;
+			}
 
-            var content = client.DownloadString($"http://localhost:61363/api/stocks/{Ticker.Text}");
+			#region After stock data is loaded
+			StocksStatus.Text = $"Loaded stocks for {Ticker.Text} in {watch.ElapsedMilliseconds}ms";
+			StockProgress.Visibility = Visibility.Hidden;
+			#endregion
+		}
 
-            var data = JsonConvert.DeserializeObject<IEnumerable<StockPrice>>(content);
+		public async Task GetStocks()
+		{
+			using (var client = new HttpClient())
+			{
+				try
+				{
+					var response = await client.GetAsync($"http://localhost:61363/api/stocks/{Ticker.Text}");
 
-            Stocks.ItemsSource = data;
+					var content = await response.Content.ReadAsStringAsync();
 
-            #region After stock data is loaded
-            StocksStatus.Text = $"Loaded stocks for {Ticker.Text} in {watch.ElapsedMilliseconds}ms";
-            StockProgress.Visibility = Visibility.Hidden;
-            #endregion
-        }
+					var data = JsonConvert.DeserializeObject<IEnumerable<StockPrice>>(content);
 
-        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+					Stocks.ItemsSource = data;
+				}
+				catch (Exception ex)
+				{
+					Notes.Text += ex.Message;
+				}
+			}
+		}
 
-            e.Handled = true;
-        }
+		private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+		{
+			Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
 
-        private void Close_OnClick(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-    }
+			e.Handled = true;
+		}
+
+		private void Close_OnClick(object sender, RoutedEventArgs e)
+		{
+			Application.Current.Shutdown();
+		}
+	}
 }
