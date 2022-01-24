@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c8f01325-3aa2-4435-a55f-cf411820fb90": {
+      "ProjectGuid": "c8f01325-3aa2-4435-a55f-cf411820fb90",
+      "DisplayName": "StockAnalyzer.Windows",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
