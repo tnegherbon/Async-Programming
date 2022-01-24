@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\02",
-    "\\02\\Start_Here",
-    "\\02\\Start_Here\\StockAnalyzer.Web",
-    "\\02\\Start_Here\\StockAnalyzer.Web\\Views",
-    "\\02\\Start_Here\\StockAnalyzer.Web\\Views\\Home"
+    ""
   ],
-  "SelectedNode": "\\02\\Start_Here\\StockAnalyzer.Web\\Views\\Home\\Stock.cshtml",
+  "SelectedNode": "\\StockAnalyzer.sln (03\\Start_Here\\StockAnalyzer.sln)",
   "PreviewInSolutionExplorer": false
 }
