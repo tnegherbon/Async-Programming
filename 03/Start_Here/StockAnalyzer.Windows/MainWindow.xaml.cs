@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.Core.Domain;
 using StockAnalyzer.Windows.Services;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -53,15 +54,31 @@ namespace StockAnalyzer.Windows
 			{
 				var tickers = Ticker.Text.Split(',', ' ');
 
-				var service = new MockStockService();
+				var service = new StockService();
+				var stocks = new ConcurrentBag<StockPrice>();
 
 				var tickerLoadingTasks = new List<Task<IEnumerable<StockPrice>>>();
 				foreach (var ticker in tickers)
 				{
-					var loadTask = service.GetStockPricesFor(ticker.ToUpperInvariant(), cancellationTokenSource.Token);
+					var loadTask = service.GetStockPricesFor(ticker.ToUpperInvariant(), cancellationTokenSource.Token)
+						.ContinueWith(t =>
+						{
+							foreach (var stock in t.Result.Take(5)) stocks.Add(stock);
+
+							Dispatcher.Invoke(() =>
+							{
+								Stocks.ItemsSource = stocks.ToArray();
+							});
+
+							return t.Result;
+						});
+
 					tickerLoadingTasks.Add(loadTask);
 				}
 
+				var allStocksLoadingTask = Task.WhenAll(tickerLoadingTasks);
+
+				/*#region Handling Timeout
 				var timeoutTask = Task.Delay(100);
 				var allStocksLoadingTask = Task.WhenAll(tickerLoadingTasks);
 				var completedTask = await Task.WhenAny(timeoutTask, allStocksLoadingTask);
@@ -72,8 +89,9 @@ namespace StockAnalyzer.Windows
 					cancellationTokenSource = null;
 					throw new Exception("Timeout!");
 				}
+				#endregion*/
 
-				Stocks.ItemsSource = allStocksLoadingTask.Result.SelectMany(stock => stock);
+				await allStocksLoadingTask;
 			}
 			catch (Exception ex)
 			{
