@@ -24,3 +24,5 @@
 /03/Start_Here/StockAnalyzer.Windows/obj
 /03/Start_Here/StockAnalyzer.Web/bin
 /03/Start_Here/StockAnalyzer.Core/bin/Debug/netstandard2.0
+/03/Start_Here/StockAnalyzer.Tests/bin/Debug/net6.0
+/03/Start_Here/StockAnalyzer.Tests/obj

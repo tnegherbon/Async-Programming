@@ -53,12 +53,12 @@ namespace StockAnalyzer.Windows
 			{
 				var tickers = Ticker.Text.Split(',', ' ');
 
-				var service = new StockService();
+				var service = new MockStockService();
 
 				var tickerLoadingTasks = new List<Task<IEnumerable<StockPrice>>>();
 				foreach (var ticker in tickers)
 				{
-					var loadTask = service.GetStockPricesFor(ticker, cancellationTokenSource.Token);
+					var loadTask = service.GetStockPricesFor(ticker.ToUpperInvariant(), cancellationTokenSource.Token);
 					tickerLoadingTasks.Add(loadTask);
 				}
 
