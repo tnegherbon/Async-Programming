@@ -108,6 +108,17 @@ namespace StockAnalyzer.Windows
 			#endregion
 		}
 
+		public async Task<IEnumerable<StockPrice>> GetStockFor(string ticker)
+		{
+			var service = new StockService();
+
+			var stocks = await service.GetStockPricesFor(ticker, CancellationToken.None).ConfigureAwait(false);
+
+			Notes.Text += $"Stocks loaded!{Environment.NewLine}";
+
+			return stocks.Take(5);
+		}
+
 		private void TaskExecutionApproach(Stopwatch watch)
 		{
 			var loadLinesTask = SearchForStocks(cancellationTokenSource.Token);
