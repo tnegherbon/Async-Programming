@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.Core.Domain;
 using StockAnalyzer.Windows.Services;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -66,8 +67,32 @@ namespace StockAnalyzer.Windows
 
 				var loadedStocks = await Task.WhenAll(tickerLoadingTasks);
 
+				var values = new ConcurrentBag<StockCalculation>();
 
-				Stocks.ItemsSource = loadedStocks.SelectMany(stocks => stocks);
+				var executionResult = Parallel.ForEach(loadedStocks,
+					new ParallelOptions { CancellationToken = cancellationTokenSource.Token },
+					(stocks, state) =>
+				{
+					var ticker = stocks.First().Ticker;
+					if (ticker == "MSFT")
+					{
+						state.Break();
+						return;
+					}
+
+					var result = CalculateExpensiveComputation(stocks);
+					var data = new StockCalculation
+					{
+						Ticker = stocks.First().Ticker,
+						Result = result
+					};
+
+					values.Add(data);
+				});
+
+				Notes.Text += $"Ran to completion: {executionResult.IsCompleted}{Environment.NewLine}";
+
+				Stocks.ItemsSource = values.ToArray();
 			}
 			catch (Exception ex)
 			{
