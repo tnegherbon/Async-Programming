@@ -20,6 +20,8 @@ namespace StockAnalyzer.Windows
 			InitializeComponent();
 		}
 
+		static object syncRoot = new object();
+
 		CancellationTokenSource cancellationTokenSource = null;
 
 		private async void Search_Click(object sender, RoutedEventArgs e)
@@ -65,6 +67,27 @@ namespace StockAnalyzer.Windows
 				}
 				#endregion
 
+				var loadedStocks = (await Task.WhenAll(tickerLoadingTasks));
+
+				decimal total = 0;
+
+				Parallel.ForEach(loadedStocks, stocks =>
+				{
+					var value = 0m;
+					foreach (var stock in stocks)
+					{
+						value += Compute(stock);
+					}
+
+					lock (syncRoot)
+					{
+						total += value;
+					}
+				});
+
+				Notes.Text = total.ToString();
+
+				/*#region Processing a Colletion in Parallel
 				var loadedStocks = await Task.WhenAll(tickerLoadingTasks);
 
 				var values = new ConcurrentBag<StockCalculation>();
@@ -92,7 +115,8 @@ namespace StockAnalyzer.Windows
 
 				Notes.Text += $"Ran to completion: {executionResult.IsCompleted}{Environment.NewLine}";
 
-				Stocks.ItemsSource = values.ToArray();
+				Stocks.ItemsSource = values.ToArray(); 
+				#endregion*/
 			}
 			catch (Exception ex)
 			{
