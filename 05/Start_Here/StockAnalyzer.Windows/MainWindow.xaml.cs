@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using StockAnalyzer.Core.Domain;
+using StockAnalyzer.Windows.Services;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
-using Newtonsoft.Json;
-using StockAnalyzer.Core.Domain;
-using StockAnalyzer.Windows.Services;
 
 namespace StockAnalyzer.Windows
 {
@@ -53,7 +49,7 @@ namespace StockAnalyzer.Windows
 
 			try
 			{
-				StockProgress.IsIndeterminate = false;
+				/*StockProgress.IsIndeterminate = false;
 				StockProgress.Value = 0;
 				StockProgress.Maximum = Ticker.Text.Split(',', ' ').Count();
 
@@ -64,7 +60,11 @@ namespace StockAnalyzer.Windows
 					Notes.Text += $"Loaded {stocks.Count()} for {stocks.First().Ticker}{Environment.NewLine}";
 				};
 
-				await LoadStocks(progress);
+				await LoadStocks(progress);*/
+
+				Stocks.ItemsSource = await GetStocksFor(Ticker.Text);
+
+				//await this.WorkInNotepad();
 			}
 			catch (Exception ex)
 			{
@@ -135,6 +135,8 @@ namespace StockAnalyzer.Windows
 
 		public Task<IEnumerable<StockPrice>> GetStocksFor(string ticker)
 		{
+			var source = new TaskCompletionSource<IEnumerable<StockPrice>>();
+
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				try
@@ -159,14 +161,37 @@ namespace StockAnalyzer.Windows
 						prices.Add(price);
 					}
 
+					source.SetResult(prices.Where(price => price.Ticker == ticker));
 				}
 				catch (Exception ex)
 				{
+					source.SetException(ex);
 				}
 			});
 
-			// TODO: Change this
-			return Task.FromResult<IEnumerable<StockPrice>>(null); ;
+			return source.Task;
+		}
+
+		public Task WorkInNotepad()
+		{
+			var source = new TaskCompletionSource<object>();
+			var process = new Process
+			{
+				EnableRaisingEvents = true,
+				StartInfo = new ProcessStartInfo("Notepad.exe")
+				{
+					RedirectStandardError = true,
+					UseShellExecute = false
+				}
+			};
+
+			process.Exited += (sender, e) =>
+			{
+				source.SetResult(null);
+			};
+
+			process.Start();
+			return source.Task;
 		}
 
 		Random random = new Random();
