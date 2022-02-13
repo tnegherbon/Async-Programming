@@ -49,7 +49,8 @@ namespace StockAnalyzer.Windows
 
 			try
 			{
-				/*StockProgress.IsIndeterminate = false;
+				/*#region Load All Stocks
+				StockProgress.IsIndeterminate = false;
 				StockProgress.Value = 0;
 				StockProgress.Maximum = Ticker.Text.Split(',', ' ').Count();
 
@@ -60,11 +61,41 @@ namespace StockAnalyzer.Windows
 					Notes.Text += $"Loaded {stocks.Count()} for {stocks.First().Ticker}{Environment.NewLine}";
 				};
 
-				await LoadStocks(progress);*/
+				await LoadStocks(progress);
+				#endregion*/
 
-				Stocks.ItemsSource = await GetStocksFor(Ticker.Text);
+				//Stocks.ItemsSource = await GetStocksFor(Ticker.Text);
 
 				//await this.WorkInNotepad();
+
+				#region Attach Child Tasks Example
+				Debug.WriteLine("Starting");
+
+				Random random = new Random();
+
+				await Task.Factory.StartNew(() =>
+				{
+					Task.Factory.StartNew(() =>
+					{
+						Thread.Sleep(random.Next(1000, 3000));
+						Debug.WriteLine("Completing 1");
+					}, TaskCreationOptions.AttachedToParent);
+
+					Task.Factory.StartNew(() =>
+					{
+						Thread.Sleep(random.Next(1000, 3000));
+						Debug.WriteLine("Completing 2");
+					}, TaskCreationOptions.AttachedToParent);
+
+					Task.Factory.StartNew(() =>
+					{
+						Thread.Sleep(random.Next(1000, 3000));
+						Debug.WriteLine("Completing 3");
+					}, TaskCreationOptions.AttachedToParent);
+				});
+
+				Debug.WriteLine("Completed");
+				#endregion
 			}
 			catch (Exception ex)
 			{
