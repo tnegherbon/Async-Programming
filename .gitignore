@@ -37,3 +37,5 @@
 /05/Start_Here/StockAnalyzer.Web/obj
 /05/Start_Here/StockAnalyzer.Web/bin
 /05/Start_Here/StockAnalyzer.Core/bin/Debug/netstandard2.0
+/05/Start_Here/StockAnalyzer.Windows.Core/bin/Debug/netcoreapp3.0
+/05/Start_Here/StockAnalyzer.Windows.Core/obj

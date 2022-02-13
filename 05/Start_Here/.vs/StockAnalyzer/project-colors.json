@@ -15,7 +15,12 @@
       "ProjectGuid": "c8f01325-3aa2-4435-a55f-cf411820fb90",
       "DisplayName": "StockAnalyzer.Windows",
       "ColorIndex": 1
+    },
+    "a6809837-fba1-4a49-87d0-33815a0c16c7": {
+      "ProjectGuid": "a6809837-fba1-4a49-87d0-33815a0c16c7",
+      "DisplayName": "StockAnalyzer.Windows.Core",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 3
 }

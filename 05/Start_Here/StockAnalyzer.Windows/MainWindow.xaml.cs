@@ -69,7 +69,7 @@ namespace StockAnalyzer.Windows
 				//await this.WorkInNotepad();
 
 				#region Attach Child Tasks Example
-				Debug.WriteLine("Starting");
+				/*Debug.WriteLine("Starting");
 
 				Random random = new Random();
 
@@ -94,7 +94,11 @@ namespace StockAnalyzer.Windows
 					}, TaskCreationOptions.AttachedToParent);
 				});
 
-				Debug.WriteLine("Completed");
+				Debug.WriteLine("Completed");*/
+				#endregion
+
+				#region Deadlock Example
+				/*LoadStocks().Wait();*/
 				#endregion
 			}
 			catch (Exception ex)
